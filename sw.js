@@ -9,6 +9,33 @@ self.addEventListener('install', function (event) {
    * TODO - Part 2 Step 2
    * Create a function as outlined above
    */
+  // Perform install steps
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+        console.log('Opened cache');
+        return cache.addAll([
+          '/',
+          '/assets/styles/main.css',
+          '/assets/scripts/main.js',
+          '/assets/scripts/Router.js',
+          '/assets/components/RecipeCard.js',
+          '/assets/components/RecipeExpand.js',
+          '/assets/images/icons/0-star.svg',
+          '/assets/images/icons/1-star.svg',
+          '/assets/images/icons/2-star.svg',
+          '/assets/images/icons/3-star.svg',
+          '/assets/images/icons/4-star.svg',
+          '/assets/images/icons/5-star.svg',
+          '/assets/images/icons/arrow-down.png',
+          'https://introweb.tech/assets/json/ghostCookies.json',
+          'https://introweb.tech/assets/json/birthdayCake.json',
+          'https://introweb.tech/assets/json/chocolateChip.json',
+          'https://introweb.tech/assets/json/stuffing.json',
+          'https://introweb.tech/assets/json/turkey.json',
+          'https://introweb.tech/assets/json/pumpkinPie.json'
+        ]);
+      })
+  );
 });
 
 /**
@@ -21,6 +48,7 @@ self.addEventListener('activate', function (event) {
    * TODO - Part 2 Step 3
    * Create a function as outlined above, it should be one line
    */
+   event.waitUntil(clients.claim());
 });
 
 // Intercept fetch requests and store them in the cache
@@ -29,4 +57,31 @@ self.addEventListener('fetch', function (event) {
    * TODO - Part 2 Step 4
    * Create a function as outlined above
    */
+   event.respondWith(
+    caches.match(event.request)
+      .then(function(response) {
+        // Cache hit - return response
+        if (response) {
+          return response;
+        }
+        return fetch(event.request).then(
+          function(response) {
+            // Check if we received a valid response
+            if(!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+
+            var responseToCache = response.clone();
+
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                cache.put(event.request, responseToCache);
+              });
+            return response;
+          }
+        );
+      }
+    )
+  );
 });
