@@ -14,7 +14,7 @@ self.addEventListener('install', function (event) {
     caches.open(CACHE_NAME).then((cache) => {
         console.log('Opened cache');
         return cache.addAll([
-          // '/',
+          './',
           // '/assets/styles/main.css',
           // '/assets/scripts/main.js',
           // '/assets/scripts/Router.js',
