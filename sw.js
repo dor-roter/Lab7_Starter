@@ -15,7 +15,7 @@ self.addEventListener('install', function (event) {
         console.log('Opened cache');
         return cache.addAll([
           './',
-          // '/assets/styles/main.css',
+          './assets/styles/main.css',
           // '/assets/scripts/main.js',
           // '/assets/scripts/Router.js',
           // '/assets/components/RecipeCard.js',
